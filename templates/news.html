@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Новости</title>
+    <link rel="stylesheet" href="../static/styles.css">
+</head>
+<body>
+{% for item in news %}
+    <div class="newscard"
+         onclick="location.href='https://vk.com/wall{{item['from_id']}}_{{item['id']}}'">
+        <div style="margin-bottom: 20px; height: 120px; border-bottom: 2px solid lightgrey">
+            <img src= "{{users[item['from_id']]['photo_100']}}" style="float: left;"/>
+            <div style="float: left; margin-left: 20px; height: 100px; line-height: 100px;">
+                <strong>{{users[item['from_id']]['first_name']}}
+                {{users[item['from_id']]['last_name']}}</strong>
+            </div></br>
+        </div>
+        {{item['text']}}</br>
+        {% for attachment in item['attachments'] %}
+            {% if 'photo' in attachment %}
+                <img src= "{{ attachment['photo']['src_big'] }}"
+                     style="margin: 20px 0px 0px 0px; width: 600px;" />
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endfor %}
+</body>
+</html>

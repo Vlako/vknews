@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Главная</title>
+    <link rel="stylesheet" href="../static/styles.css">
+</head>
+<body>
+    <div style="margin: auto;
+            width: 800px;">
+        {% for item in members %}
+        <div class="usercard"
+             onclick="location.href='http://localhost:8080/news/{{item['uid']}}'">
+            <img src="{{item['photo_200']}}" style="width: 150px; height: 150px" />
+            {{item['first_name']}}</br>
+            {{item['last_name']}}
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
