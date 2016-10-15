@@ -1,13 +1,10 @@
 import asyncio
-from aiohttp import web, ClientSession
+from aiohttp import web
 from vkclient import VKClient
 import aiohttp_jinja2
 import jinja2
 
-
 app = web.Application()
-
-session = ClientSession()
 
 aiohttp_jinja2.setup(app, loader=jinja2.FileSystemLoader('./templates'))
 

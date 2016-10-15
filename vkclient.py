@@ -34,7 +34,6 @@ class VKClient:
         tasks = []
         members = []
         for user in await self.get_group_members(group_id):
-            print(user)
             members.append(user['uid'])
             tasks.append(asyncio.ensure_future(self.get_friends(user['uid'])))
         graph = dict(zip(members, await asyncio.gather(*tasks)))
