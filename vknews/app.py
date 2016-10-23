@@ -1,6 +1,6 @@
 import asyncio
 from aiohttp import web
-from vkclient import VKClient
+from vknews.vkclient import VKClient
 import aiohttp_jinja2
 import jinja2
 

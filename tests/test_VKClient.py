@@ -1,6 +1,6 @@
 import unittest
 import asyncio
-from vkclient import VKClient
+from vknews.vkclient import VKClient
 
 
 class TestVKClient(unittest.TestCase):
