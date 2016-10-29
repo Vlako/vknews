@@ -1,10 +1,11 @@
 body {
-    background-color: gainsboro;
+    background-color: #597da3;
 }
 
 .usercard {
     margin: 20px;
     background-color: white;
+    color: #597da3;
     height: 190px;
     -webkit-box-shadow: 5px 5px 17px 1px rgba(0,0,0,0.75);
     -moz-box-shadow: 5px 5px 17px 1px rgba(0,0,0,0.75);

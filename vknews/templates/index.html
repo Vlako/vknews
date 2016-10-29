@@ -10,10 +10,10 @@
             width: 800px;">
         {% for item in members %}
         <div class="usercard"
-             onclick="location.href='http://localhost:8080/news/{{item['uid']}}'">
-            <img src="{{item['photo_200']}}" style="width: 150px; height: 150px" />
-            {{item['first_name']}}</br>
-            {{item['last_name']}}
+             onclick="location.href='http://localhost:8080/news/{{item.user_id}}'">
+            <img src="{{item.photo_200}}" style="width: 150px; height: 150px" />
+            <strong>{{item.first_name}}</br>
+            {{item.last_name}}</strong>
         </div>
         {% endfor %}
     </div>

@@ -1,6 +1,7 @@
-import unittest
 import asyncio
-from vknews.vkclient import VKClient
+import unittest
+
+from vknews.vk.vkclient import VKClient
 
 
 class TestVKClient(unittest.TestCase):
@@ -9,7 +10,6 @@ class TestVKClient(unittest.TestCase):
         loop = asyncio.get_event_loop()
         user_id = 1
         vkclient = VKClient()
-        user_info = loop.run_until_complete(vkclient.get_user_info(user_id))
-        self.assertIsInstance(user_info, dict)
-        self.assertEqual(user_info['first_name'], 'Павел')
-        self.assertEqual(user_info['last_name'], 'Дуров')
+        user = loop.run_until_complete(vkclient.get_user(user_id))
+        self.assertEqual(user.first_name, 'Павел')
+        self.assertEqual(user.last_name, 'Дуров')

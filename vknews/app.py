@@ -1,8 +1,8 @@
-import asyncio
-from aiohttp import web
-from vknews.vkclient import VKClient
 import aiohttp_jinja2
 import jinja2
+from aiohttp import web
+
+from vknews.vk.vkclient import VKClient
 
 app = web.Application()
 
@@ -19,10 +19,10 @@ async def index(request):
 @aiohttp_jinja2.template('news.html')
 async def news(request):
     vkclient = VKClient()
-    news = await vkclient.get_user_news(request.match_info['id'], sort_key='comments')
+    news = await vkclient.get_user_news(request.match_info['id'], sort_key='reposts')
     users = await vkclient.get_friends(request.match_info['id'])
-    user_info = [asyncio.ensure_future(vkclient.get_user_info(i)) for i in users]
-    return {'news': news[:100], 'users': dict(zip(users, await asyncio.gather(*user_info)))}
+    users = {user.user_id: user for user in users}
+    return {'news': news[:100], 'users': users}
 
 
 app.router.add_route('GET', '/', index)
