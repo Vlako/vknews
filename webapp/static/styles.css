@@ -1,0 +1,47 @@
+body {
+    background-color: #597da3;
+}
+
+.usercard {
+    border-radius: 12px;
+    margin: 20px;
+    background-color: white;
+    color: #597da3;
+    height: 179px;
+    width: 130px;
+    float: left;
+    cursor: pointer;
+    text-align: center;
+    -webkit-box-shadow: 10px 10px 12px 2px rgba(49,51,102,1);
+    -moz-box-shadow: 10px 10px 12px 2px rgba(49,51,102,1);
+    box-shadow: 10px 10px 12px 2px rgba(49,51,102,1);
+}
+
+.newscard {
+    border-radius: 15px;
+    margin: 20px auto;
+    background-color: white;
+    padding: 20px;
+    -webkit-box-shadow: 10px 10px 12px 2px rgba(49,51,102,1);
+    -moz-box-shadow: 10px 10px 12px 2px rgba(49,51,102,1);
+    box-shadow: 10px 10px 12px 2px rgba(49,51,102,1);
+    width: 800px;
+    cursor: pointer;
+}
+
+.usercard:hover, .newscard:hover {
+    -webkit-box-shadow: 5px 5px 17px 1px rgba(49,51,102,1);
+    -moz-box-shadow: 5px 5px 17px 1px rgba(49,51,102,1);
+    box-shadow: 5px 5px 17px 1px rgba(49,51,102,1);
+}
+
+h1, h2{
+    text-align: center;
+    color: white;
+}
+
+.link {
+    text-align: center;
+    font-size: 25px;
+    color: white;
+}

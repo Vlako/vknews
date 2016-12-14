@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Новости</title>
+    <link rel="stylesheet" href="../../static/styles.css">
+</head>
+<body>
+<h1>Новости для пользователя {{user}}</h1></br>
+<h2><a href="/thread/{{user_id}}/likes" style="color: white">Смотреть ленту</a></h2>
+{% for item in news %}
+<div class="newscard"
+     onclick="location.href='https://vk.com/wall{{item.id}}'">
+    <div style="margin-bottom: 20px; height: 120px; border-bottom: 2px solid lightgrey">
+        <img src= "{{users[item.from_id].photo}}" style="float: left; width: 100px;"/>
+        <div style="float: left; margin-left: 20px; height: 100px; padding-top: 25px;">
+                        <span style="font-size: x-large; color: #597da3;">{{users[item['from_id']]['first_name']}}
+                    {{users[item.from_id].last_name}}</span></br>
+            <span style="font-size: medium; color: gray;">{{item.date}}</span>
+        </div></br>
+    </div>
+    <span style="font-size: large">{{item.text}}</span>
+    <div style="width: auto; text-align: center">
+        {% for photo in item.photos %}
+        <img src= "{{ photo }}"
+             style="margin-top: 20px; margin-right: 20px;" />
+        {% endfor %}<div style="clear: both"></div></div></br>
+    {% if item.original_post %}
+    </br>
+    {% for post in item.original_post %}
+    <div style="border-left: 3px solid lightgrey; width: auto; padding-left: 20px">
+        <span style="font-size: medium; color: grey;">{{post.text}}</span></br>
+        {% for photo in post.photos %}
+        <img src= "{{ photo }}"
+             style="margin-top: 20px; width: 100%;" />
+        {% endfor %}</br>
+        {% endfor %}
+        {% for post in item.original_post %}
+    </div>
+    {% endfor %}
+    {% endif %}
+    <div style="border: 1px solid #597da3; padding: 20px;">
+        {% if item.link.image %}
+        <img src= "{{item.link.image}}" style="float: left; margin-right: 20px"/>
+        {% endif %}
+        <h3 ><a href="{{item.link.url}}" style="color: #597da3">{{item.link.title}}</a></h3>
+        <span style="font-size: medium">{{item.link.description}}</span>
+        <div style="clear: both"></div>
+    </div>
+    <div style="margin-top: 20px; height: 10px; border-top: 2px solid lightgrey; padding-top: 15px; padding-bottom: 5px;">
+        <img src= "../../static/likes.jpg" style="float: left; width: 22px; margin-right: 10px;"/>
+        <span style="float: left; color: #597da3; font-size: large;"> {{item.likes}} </span>
+        <img src= "../../static/reposts.png" style="float: left; width: 22px; margin: 0px 10px;"/>
+        <span style="float: left; color: #597da3; font-size: large;"> {{item.reposts}} </span>
+        <img src= "../../static/comments.png" style="float: left; width: 22px; margin: 0px 10px;"/>
+        <span style="float: left; color: #597da3; font-size: large;"> {{item.comments}} </span>
+        <img src= "../../static/fb.png" style="float: right; width: 22px; margin: 0px 10px;"/>
+        <span style="float: right; color: #597da3; font-size: large;"> {{item.link.shareds}} </span>
+    </div>
+</div>
+{% endfor %}
+
+</body>
+</html>

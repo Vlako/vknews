@@ -7,12 +7,13 @@
 </head>
 <body>
     <div style="margin: auto;
-            width: 800px;">
+            width: 850px;">
         {% for item in members %}
         <div class="usercard"
-             onclick="location.href='http://localhost:8080/news/{{item.user_id}}'">
-            <img src="{{item.photo_200}}" style="width: 150px; height: 150px" />
-            <strong>{{item.first_name}}</br>
+             onclick="location.href='/thread/{{item.user_id}}/likes'">
+            <img src="{{item.photo}}" style="width: 130px; height: 130px;
+            border-top-left-radius: 12px; border-top-right-radius: 12px;" />
+            <strong style="vertical-align: middle; line-height: 20px">{{item.first_name}}</br>
             {{item.last_name}}</strong>
         </div>
         {% endfor %}
