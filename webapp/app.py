@@ -1,7 +1,6 @@
 from flask import Flask, render_template
-import zlib
-from webapp.models import *
-from db.models import User as DBUser, Group as DBGroup, Post as DBPost, db_session, select, desc, avg
+from webapp import mapper
+from db.models import User as DBUser, Group as DBGroup, Post as DBPost, db_session, select, desc, avg, count
 
 app = Flask(__name__)
 
@@ -12,81 +11,83 @@ def index():
         members = select(member
                          for member in DBUser
                          if DBGroup['csu_iit'] in member.groups).order_by(DBUser.user_id)
-        return render_template('index.html', members=[User(user_id=member.user_id,
-                                                           first_name=member.first_name,
-                                                           last_name=member.last_name,
-                                                           photo=member.photo)
+        return render_template('index.html', members=[mapper.get_user_from_dbuser(member)
                                                       for member in members])
 
 
-@app.route('/thread/<id>/<sort>')
-def thread(id, sort):
+@app.route('/thread/<user_id>/<sort>/<page>')
+def thread(user_id, sort, page):
     with db_session:
-        user_id = id
         if sort == 'comments':
-            sort_field = desc(DBPost.comments)
+            sort_field = desc(lambda post : desc(post.comments / (avg(p.comments for p in post.user.posts) + 1)))
         elif sort == 'reposts':
-            sort_field = desc(DBPost.reposts)
-        elif sort == 'normalization':
-            sort_field = lambda post : desc(post.likes / (avg(p.likes for p in post.user.posts) + 1))
+            sort_field = desc(lambda post : desc(post.reposts / (avg(p.reposts for p in post.user.posts) + 1)))
         else:
-            sort_field = desc(DBPost.likes)
+            sort_field = desc(lambda post : desc(post.likes / (avg(p.likes for p in post.user.posts) + 1)))
+
+        page = int(page)
         news = select(post
                       for post in DBPost
-                      if post.user in DBUser[user_id].friends).order_by(sort_field)[:100]
-        news = [Post(id=post.id,
-                     text=zlib.decompress(post.text).decode(),
-                     date=post.date.strftime('%Y-%m-%d %H:%M'),
-                     photos=post.photos,
-                     comments=post.comments,
-                     reposts=post.reposts,
-                     likes=post.likes,
-                     link=post.link)
+                      if post.user in DBUser[user_id].friends).order_by(sort_field)[page*20 : (page+1)*20]
+        news = [mapper.get_post_from_dbpost(post)
                 for post in news]
-        friends = DBUser[id].friends
-        friends = {friend.user_id: User(user_id=friend.user_id,
-                                        first_name=friend.first_name,
-                                        last_name=friend.last_name,
-                                        photo=friend.photo)
-                   for friend in friends}
+
+        users = {}
+        for i in news:
+            users[i.from_id] = mapper.get_user_from_dbuser(DBUser[i.from_id])
+            for j in i.original_post:
+                users[j.from_id] = mapper.get_user_from_dbuser(DBUser[j.from_id])
+
+        news_count = select(count(post) for post in DBPost if post.user in DBUser[user_id].friends)
+        has_next = True
+        if len(news) < 20 or page * 20 + len(news) == news_count:
+            has_next = False
+
         return render_template('thread.html',
                                news=news,
-                               users=friends,
+                               users=users,
                                user=DBUser[user_id].first_name+' '+DBUser[user_id].last_name,
-                               user_id=user_id)
+                               user_id=user_id,
+                               page=page,
+                               has_next=has_next)
 
 
-@app.route('/news/<id>')
-def news(id):
+@app.route('/news/<user_id>/<page>')
+def news(user_id, page):
     with db_session:
-        user_id = id
+
+        page = int(page)
+
         news = select(post
                       for post in DBPost
                       if post.user in DBUser[user_id].friends
                         and post.link is not None)
-        news = [Post(id=post.id,
-                     text=zlib.decompress(post.text).decode(),
-                     date=post.date.strftime('%Y-%m-%d %H:%M'),
-                     photos=post.photos,
-                     comments=post.comments,
-                     reposts=post.reposts,
-                     likes=post.likes,
-                     link=post.link)
+
+        news = [mapper.get_post_from_dbpost(post)
                 for post in news
                 if post.link['shareds'] >= 0]
         news.sort(key=lambda post: post.link['shareds'], reverse=True)
 
-        friends = DBUser[user_id].friends
-        friends = {friend.user_id: User(user_id=friend.user_id,
-                                        first_name=friend.first_name,
-                                        last_name=friend.last_name,
-                                        photo=friend.photo)
-                   for friend in friends}
+        news_count = len(news)
+        news = news[page*20 : (page+1)*20]
+
+        users = {}
+        for i in news:
+            users[i.from_id] = mapper.get_user_from_dbuser(DBUser[i.from_id])
+            for j in i.original_post:
+                users[j.from_id] = mapper.get_user_from_dbuser(DBUser[j.from_id])
+
+        has_next = True
+        if len(news) < 20 or page * 20 + len(news) == news_count:
+            has_next = False
+
         return render_template('news.html',
                                news=news[:100],
-                               users=friends,
+                               users=users,
                                user=DBUser[user_id].first_name+' '+DBUser[user_id].last_name,
-                               user_id=user_id)
+                               user_id=user_id,
+                               page=page,
+                               has_next=has_next)
 
 
 if __name__ == "__main__":

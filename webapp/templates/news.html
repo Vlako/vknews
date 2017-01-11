@@ -7,7 +7,7 @@
 </head>
 <body>
 <h1>Новости для пользователя {{user}}</h1></br>
-<h2><a href="/thread/{{user_id}}/likes" style="color: white">Смотреть ленту</a></h2>
+<h2><a href="/thread/{{user_id}}/likes/0" style="color: white">Смотреть ленту</a></h2>
 {% for item in news %}
 <div class="newscard"
      onclick="location.href='https://vk.com/wall{{item.id}}'">
@@ -26,14 +26,22 @@
              style="margin-top: 20px; margin-right: 20px;" />
         {% endfor %}<div style="clear: both"></div></div></br>
     {% if item.original_post %}
-    </br>
     {% for post in item.original_post %}
     <div style="border-left: 3px solid lightgrey; width: auto; padding-left: 20px">
-        <span style="font-size: medium; color: grey;">{{post.text}}</span></br>
-        {% for photo in post.photos %}
-        <img src= "{{ photo }}"
-             style="margin-top: 20px; width: 100%;" />
-        {% endfor %}</br>
+        <div style="margin-bottom: 20px; height: 70px; border-bottom: 2px solid lightgrey">
+            <img src= "{{users[post.from_id].photo}}" style="float: left; width: 50px;"/>
+            <div style="float: left; margin-left: 20px; height: 50px; padding-top: 5px;">
+                        <span style="font-size: large; color: #597da3;">{{users[post['from_id']]['first_name']}}
+                    {{users[post.from_id].last_name}}</span></br>
+                <span style="font-size: small; color: gray;">{{post.date}}</span>
+            </div></br>
+        </div>
+        <span style="font-size: medium;">{{post.text}}</span>
+        <div style="width: auto; text-align: left">
+            {% for photo in post.photos %}
+            <img src= "{{ photo }}"
+                 style="margin-top: 20px; margin-right: 20px; width: 20%" />
+            {% endfor %}<div style="clear: both"></div></div></br>
         {% endfor %}
         {% for post in item.original_post %}
     </div>
@@ -59,6 +67,13 @@
     </div>
 </div>
 {% endfor %}
-
+<div class="link">
+    {% if page %}
+    <a href="./{{ page - 1 }}" style="color: white;">Назад</a>
+    {% endif %}
+    {% if has_next %}
+    <a href="./{{ page + 1 }}" style="color: white;">Далее</a>
+    {% endif %}
+</div>
 </body>
 </html>

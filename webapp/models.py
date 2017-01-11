@@ -9,7 +9,7 @@ class User:
 
 class Post:
 
-    def __init__(self, id, text, date, photos, comments, reposts, likes, link):
+    def __init__(self, id, text, date, photos, comments, reposts, likes, link, original_post):
         self.id = id
         self.from_id=int(id.split('_')[0])
         self.text = text
@@ -19,3 +19,4 @@ class Post:
         self.reposts = reposts
         self.likes = likes
         self.link = link
+        self.original_post = original_post

@@ -7,7 +7,7 @@ db = Database()
 
 class User(db.Entity):
     user_id = PrimaryKey(int)
-    first_name = Required(str)
+    first_name = Optional(str)
     last_name = Optional(str)
     photo = Required(str)
     friends = Set('User', reverse='friends')
@@ -22,7 +22,7 @@ class Group(db.Entity):
 
 class Post(db.Entity):
     id = PrimaryKey(str)
-    text = Optional(bytes)
+    text = Optional(str)
     date = Required(datetime)
     photos = Optional(Json)
     comments = Required(int)
@@ -30,6 +30,7 @@ class Post(db.Entity):
     likes = Required(int)
     user = Required(User)
     link = Optional(Json)
+    original_post = Optional(str)
 
 
 db.bind('postgres', user=user, password=password, host=host, database=database)

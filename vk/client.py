@@ -9,8 +9,8 @@ from vk.models import User, Post
 
 class VKClient:
 
-    def __init__(self):
-        self.__api = VKApi()
+    def __init__(self, session):
+        self.__api = VKApi(session)
         self.__default_photo = "https://vk.com/images/deactivated_hid_200.gif"
 
     def __get_user_from_json(self, user) -> User:
@@ -31,12 +31,18 @@ class VKClient:
                         reposts=post['reposts']['count'],
                         original_post=[self.__get_post_from_json(original_post)
                                          for original_post in post['copy_history']]
-                                         if 'copy_history' in post else None)
+                                         if 'copy_history' in post else [])
         else:
             post['post_type'] = 'post'
-            return Post(post_id=post['id'],
-                        from_id=post['from_id'],
-                        date=datetime.datetime.fromtimestamp(post['date']),
+            post_id = post['id']
+            from_id = post['from_id']
+            date = datetime.datetime.fromtimestamp(post['date'])
+            post['date'] = post['copy_post_date']
+            post['id'] = post['copy_post_id']
+            post['from_id'] = post['copy_owner_id']
+            return Post(post_id=post_id,
+                        from_id=from_id,
+                        date=date,
                         text=post['copy_text'] if 'copy_text' in post else '',
                         attachments=[],
                         comments=post['comments']['count'],
@@ -65,6 +71,6 @@ class VKClient:
         return [self.__get_user_from_json(user)
                 for user in await self.__api.get_friends(user_id)]
 
-    async def get_user_wall(self, user_id, count=100):
+    async def get_user_wall(self, user_id, count=float('inf')) -> List[Post]:
         return [self.__get_post_from_json(post)
                 for post in await self.__api.get_user_wall(user_id, count)]

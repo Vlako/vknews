@@ -10,7 +10,7 @@
             width: 850px;">
         {% for item in members %}
         <div class="usercard"
-             onclick="location.href='/thread/{{item.user_id}}/likes'">
+             onclick="location.href='/thread/{{item.user_id}}/likes/0'">
             <img src="{{item.photo}}" style="width: 130px; height: 130px;
             border-top-left-radius: 12px; border-top-right-radius: 12px;" />
             <strong style="vertical-align: middle; line-height: 20px">{{item.first_name}}</br>
